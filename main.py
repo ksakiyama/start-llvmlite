@@ -1,4 +1,3 @@
-from fllvm import fllvm
 import compiler as cp
 import inspect
 import types
