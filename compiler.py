@@ -222,7 +222,6 @@ class LLVMCodeGenerator(ast.NodeVisitor):
             elif node.value.id in self.env_nametypes:
                 ptr_val = self.env_nametypes.get[node.value.id]
                 self.builder.store(self.builder.load(ptr_val), ptr_tgt)
-            # 変数の場合は、どこかで定義されたはず。されてなければエラー
 
         elif isinstance(node.value, ast.Num):
             self.builder.store(ir.Constant(i32, node.value.n), ptr_tgt)
@@ -270,7 +269,6 @@ class LLVMCodeGenerator(ast.NodeVisitor):
     def visit_BinOp(self, node):
         """
         四則演算のとき
-        TODO たぶん3つ以上のときにエラー
         """
         node.left = self.visit(node.left)
         node.right = self.visit(node.right)
@@ -306,7 +304,6 @@ class LLVMCodeGenerator(ast.NodeVisitor):
         else:
             raise Exception("Unknown data type")
 
-        # self.builder.ret(result)
         return result
 
 
