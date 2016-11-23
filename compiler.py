@@ -325,10 +325,10 @@ class Compiler():
     LLVM IRを生成して実行する
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, debug=False):
+        self.debug = debug
 
-    def exe(self, func, *args):
+    def __call__(self, func, *args):
         """
         第一引数：関数
         第二引数以降：関数に渡す引数
@@ -346,11 +346,6 @@ class Compiler():
         codegen = LLVMCodeGenerator(typeInf.ret_type)
         codegen.visit(tree)
 
-        # print("=======================================")
-        # print("== LLVM IR ============================")
-        # print(codegen.module)
-        # print("=======================================")
-
         # LLVM IR syntaxチェック
         llvm_ir_parsed = llvm.parse_assembly(str(codegen.module))
 
@@ -361,6 +356,12 @@ class Compiler():
         pm = llvm.create_module_pass_manager()
         pmb.populate(pm)
         pm.run(llvm_ir_parsed)
+
+        if self.debug:
+            print("== LLVM IR ============================")
+            print(llvm_ir_parsed)
+            print("=======================================")
+
 
         # JIT
         target_machine = llvm.Target.from_default_triple().create_target_machine()
